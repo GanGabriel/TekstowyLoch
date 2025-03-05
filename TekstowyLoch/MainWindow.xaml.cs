@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 
 namespace TekstowyLoch
 {
+    // Test 1
+    /// Test 2
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

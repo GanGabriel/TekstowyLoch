@@ -5,31 +5,79 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TekstowyLoch"
         mc:Ignorable="d"
-        Title="MainWindow" Height="770" Width="1337">
+        Title="Tekstowy Loch" Height="770" Width="1337"
+        WindowStartupLocation="CenterScreen">
 
     <Grid>
         <Grid.Background>
-            <ImageBrush Stretch="Fill"  ImageSource="C:\Users\strac\Desktop\images.steamusercontent.jpg" AlignmentY="Top" AlignmentX="Center" />
+            <ImageBrush Stretch="Fill" 
+                        ImageSource="C:\Users\strac\Desktop\images.steamusercontent.jpg"
+                        AlignmentX="Center" AlignmentY="Top" />
         </Grid.Background>
-        <StackPanel x:Name="LayoutRoot" Margin="10">
-            <Button x:Name="btn1" Content="Nowa Gra"
-          Click="OnClick1" ClickMode="Press"
-          Margin="10, 10, 10, 10" Width="200" Height="40"
-          HorizontalAlignment="Right"
-          Foreground="Black"/>
 
-            <Button x:Name="btn2" Content="Wczytaj Gre"
-          Click="OnClick2" ClickMode="Press"
-          Margin="10, 10, 10, 10" Width="200" Height="40"
-          HorizontalAlignment="Right"
-          Foreground="Black"/>
-            <Button x:Name="btn3" Content="Wyjdź" Click="CloseApp"
-          Margin="10, 10, 10, 10" Width="200" Height="40"
-          HorizontalAlignment="Right">
-            </Button>
-        </StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <Canvas x:Name="gameCanvas" Width="300" Height="300" Background="Transparent" />
+            <StackPanel x:Name="menuPanel" Grid.Row="0" Margin="10" HorizontalAlignment="Right">
+                <Button x:Name="btnNewGame" Content="Nowa Gra" 
+                        Click="OnClick1" ClickMode="Press" 
+                        Margin="10" Width="200" Height="40" 
+                        Foreground="Black" Background="LightGray" />
+                <Button x:Name="btnLoadGame" Content="Wczytaj Grę" 
+                        Click="OnClickLoadGame" ClickMode="Press" 
+                        Margin="10" Width="200" Height="40" 
+                        Foreground="Black" Background="LightGray" />
+                <Button x:Name="btnExit" Content="Wyjdź" 
+                        Click="CloseApp" ClickMode="Press" 
+                        Margin="10" Width="200" Height="40" 
+                        Foreground="Black" Background="LightGray" />
+            </StackPanel>
 
+            <StackPanel x:Name="gameMenuPanel" Grid.Row="0" Margin="10" HorizontalAlignment="Right" Visibility="Collapsed">
+                <Button Content="Zapisz Grę" 
+                        Click="SaveGame" ClickMode="Press" 
+                        Margin="10" Width="200" Height="40" 
+                        Foreground="Black" Background="LightGray" />
+                <Button Content="Wczytaj Grę" 
+                        Click="LoadGameInGame" ClickMode="Press" 
+                        Margin="10" Width="200" Height="40" 
+                        Foreground="Black" Background="LightGray" />
+                <Button Content="Wyjdź z Gry" 
+                        Click="CloseApp" ClickMode="Press" 
+                        Margin="10" Width="200" Height="40" 
+                        Foreground="Black" Background="LightGray" />
+            </StackPanel>
+
+            <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Mapa -->
+                    <ColumnDefinition Width="Auto" />
+                    <!-- Przyciski ruchu -->
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Canvas x:Name="gameCanvas" Grid.Column="0" Grid.Row="0" Width="300" Height="300" Background="Transparent" />
+
+                <StackPanel x:Name="movementPanel" Grid.Column="1" Grid.Row="0" Visibility="Collapsed" 
+                            Margin="20,0,0,0" VerticalAlignment="Center">
+                    <Button Content="Idź do przodu" Width="120" Height="40" Margin="5" Click="MovePlayerUp" />
+                    <Button Content="Idź do tyłu" Width="120" Height="40" Margin="5" Click="MovePlayerDown" />
+                    <Button Content="Idź w lewo" Width="120" Height="40" Margin="5" Click="MovePlayerLeft" />
+                    <Button Content="Idź w prawo" Width="120" Height="40" Margin="5" Click="MovePlayerRight" />
+                </StackPanel>
+
+                <StackPanel x:Name="statsPanel" Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0" Visibility="Collapsed">
+                    <TextBlock x:Name="healthText" Text="Życie: 100" Foreground="White" FontSize="16" Margin="0,0,20,0" />
+                    <TextBlock x:Name="armorText" Text="Pancerz: 0" Foreground="White" FontSize="16" />
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

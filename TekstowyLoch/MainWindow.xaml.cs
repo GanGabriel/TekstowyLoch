@@ -1,54 +1,44 @@
 ﻿using System;
-using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace TekstowyLoch
 {
     public partial class MainWindow : Window
     {
-        private GameLogic gameLogic;
+        private readonly GameLogic gameLogic;
 
         public MainWindow()
         {
             InitializeComponent();
-            gameLogic = new GameLogic(gameCanvas, healthText, armorText);
+            gameLogic = new GameLogic(gameCanvas, healthText, armorText, damageText, goldText, weaponText, floorText, consoleLog, inventoryComboBox, combatPanel, inventoryPanel);
+        }
+
+        private void ShowGamePanels()
+        {
+            newGameButton.Visibility = Visibility.Collapsed;
+            loadGameButton.Visibility = Visibility.Visible;
+            saveGameButton.Visibility = Visibility.Visible;
+            mapPanel.Visibility = Visibility.Visible;
+            statsPanel.Visibility = Visibility.Visible;
+            combatPanel.Visibility = Visibility.Collapsed;
+            inventoryPanel.Visibility = Visibility.Visible;
+            consoleScroll.Visibility = Visibility.Visible;
         }
 
         private void OnClick1(object sender, RoutedEventArgs e)
         {
-            StartNewGame();
-        }
-
-        private void StartNewGame()
-        {
-            menuPanel.Visibility = Visibility.Collapsed;
-            movementPanel.Visibility = Visibility.Visible;
-            gameMenuPanel.Visibility = Visibility.Visible;
-            statsPanel.Visibility = Visibility.Visible;
+            ShowGamePanels();
             gameLogic.StartNewGame();
         }
 
         private void OnClickLoadGame(object sender, RoutedEventArgs e)
         {
-            LoadGame();
-        }
-
-        private void LoadGameInGame(object sender, RoutedEventArgs e)
-        {
-            LoadGame();
-        }
-
-        private void LoadGame()
-        {
             try
             {
                 gameLogic.LoadGame();
-                menuPanel.Visibility = Visibility.Collapsed;
-                movementPanel.Visibility = Visibility.Visible;
-                gameMenuPanel.Visibility = Visibility.Visible;
-                statsPanel.Visibility = Visibility.Visible;
-                MessageBox.Show("Gra została wczytana!", "Wczytywanie Gry", MessageBoxButton.OK, MessageBoxImage.Information);
+                ShowGamePanels();
             }
             catch (Exception ex)
             {
@@ -61,23 +51,53 @@ namespace TekstowyLoch
             Application.Current.Shutdown();
         }
 
-        private void MovePlayerUp(object sender, RoutedEventArgs e) => gameLogic.MovePlayer('w');
-        private void MovePlayerDown(object sender, RoutedEventArgs e) => gameLogic.MovePlayer('s');
-        private void MovePlayerLeft(object sender, RoutedEventArgs e) => gameLogic.MovePlayer('a');
-        private void MovePlayerRight(object sender, RoutedEventArgs e) => gameLogic.MovePlayer('d');
-
         private void SaveGame(object sender, RoutedEventArgs e)
         {
             try
             {
                 gameLogic.SaveGame();
-                string savePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "TekstowyLoch_Save.txt");
-                MessageBox.Show($"Gra zapisana w: {savePath}", "Zapis Gry", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Gra zapisana!", "Zapis", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Błąd podczas zapisywania gry: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Błąd zapisu: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AttackEnemy(object sender, RoutedEventArgs e)
+        {
+            gameLogic.PlayerAttack();
+        }
+
+        private void RunFromEnemy(object sender, RoutedEventArgs e)
+        {
+            gameLogic.TryToEscape();
+        }
+
+        private void UseSelectedItem(object sender, RoutedEventArgs e)
+        {
+            if (inventoryComboBox.SelectedItem != null)
+                gameLogic.UseItem(inventoryComboBox.SelectedItem.ToString());
+        }
+
+        private void InventoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (inventoryComboBox.SelectedItem != null)
+                gameLogic.ShowItemEffect(inventoryComboBox.SelectedItem.ToString());
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            char direction = e.Key switch
+            {
+                Key.W or Key.Up => 'w',
+                Key.S or Key.Down => 's',
+                Key.A or Key.Left => 'a',
+                Key.D or Key.Right => 'd',
+                _ => '\0'
+            };
+            if (direction != '\0')
+                gameLogic.MovePlayer(direction);
         }
     }
 }
